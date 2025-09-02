@@ -59,14 +59,16 @@ export default function DashboardPage() {
         const response = await fetch('/api/config');
         if (response.ok) {
           const data = await response.json();
-          setAppConfig(data.config);
+          if (setAppConfig) {
+            setAppConfig(data.config);
+          }
         }
       } catch (error) {
         console.error('Failed to load config:', error);
       }
     };
     loadConfig();
-  }, []);
+  }, [setAppConfig]);
 
   useEffect(() => {
     if (isAuthenticated) {
