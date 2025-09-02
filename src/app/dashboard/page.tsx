@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore, useDashboardStore, useUIStore } from '@/lib/store';
-import { proxmoxAPI, ProxmoxVM, ProxmoxLXC } from '@/lib/proxmox';
+import { proxmoxAPI, ProxmoxVM, ProxmoxLXC, ProxmoxNode } from '@/lib/proxmox';
+
+interface AppConfig {
+  proxmox?: { host: string };
+  guacamole?: { host: string };
+}
 import { VMCard } from '@/components/dashboard/vm-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +48,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
