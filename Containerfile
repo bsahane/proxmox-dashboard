@@ -14,7 +14,13 @@ RUN apk add --no-cache libc6-compat
 COPY package*.json ./
 
 # Install ALL dependencies for build (including devDependencies)
-    RUN npm ci --include=dev --silent && npm cache clean --force
+RUN npm ci --include=dev --silent
+
+# Ensure all required packages are installed
+RUN npm list tailwindcss autoprefixer postcss tailwindcss-animate || npm install tailwindcss autoprefixer postcss tailwindcss-animate --save-dev
+
+# Clean npm cache after everything is installed
+RUN npm cache clean --force
 
 # Copy source code
 COPY . .
