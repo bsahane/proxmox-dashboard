@@ -13,8 +13,8 @@ RUN apk add --no-cache libc6-compat
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production --silent
+# Install dependencies  
+RUN npm ci --omit=dev --silent
 
 # Copy source code
 COPY . .

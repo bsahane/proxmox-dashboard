@@ -41,11 +41,40 @@ echo -e "${GREEN}✅ Using $RUNTIME runtime${NC}"
 # Check if port is available
 check_port() {
     local port=$1
-    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
-        return 1
-    else
-        return 0
+    
+    # Try multiple methods to check port availability
+    # Method 1: lsof (most common)
+    if command -v lsof >/dev/null 2>&1; then
+        if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
+            return 1
+        fi
     fi
+    
+    # Method 2: netstat (backup)
+    if command -v netstat >/dev/null 2>&1; then
+        if netstat -tuln 2>/dev/null | grep -q ":$port "; then
+            return 1
+        fi
+    fi
+    
+    # Method 3: ss (newer systems)
+    if command -v ss >/dev/null 2>&1; then
+        if ss -tuln 2>/dev/null | grep -q ":$port "; then
+            return 1
+        fi
+    fi
+    
+    # Method 4: Try to bind to port (most reliable)
+    if command -v nc >/dev/null 2>&1; then
+        if ! nc -z localhost $port 2>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+    
+    # If all methods fail, assume port is available
+    return 0
 }
 
 # Find available port starting from default
