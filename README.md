@@ -67,19 +67,20 @@ npm install
 cp .env.example .env.local
 ```
 
-Edit `.env.local` with your server details:
+Edit `.env.local` based on your setup:
+
+**For Local IP (self-signed certificates):**
 ```env
-# Required Configuration
-PROXMOX_HOST=https://your-proxmox-server:8006
-GUACAMOLE_HOST=http://your-guacamole-server:8080
+PROXMOX_HOST=https://192.168.50.7:8006
+GUACAMOLE_HOST=http://192.168.50.183:8080
+NODE_TLS_REJECT_UNAUTHORIZED=0  # Disable SSL verification
+```
 
-# Security (for self-signed certificates)
-NODE_TLS_REJECT_UNAUTHORIZED=0
-
-# Optional Settings
-PROXMOX_API_TIMEOUT=30000
-DASHBOARD_REFRESH_INTERVAL=30
-DEBUG_LOGGING=false
+**For Domain (valid certificates):**
+```env
+PROXMOX_HOST=https://pve.sahane.in:8006
+GUACAMOLE_HOST=https://guac.sahane.in
+NODE_TLS_REJECT_UNAUTHORIZED=1  # Enable SSL verification
 ```
 
 4. **Start the development server**

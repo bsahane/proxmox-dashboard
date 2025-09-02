@@ -63,7 +63,10 @@ detect_architecture() {
 
 # Function to detect container runtime
 detect_container_runtime() {
-    if command -v podman &> /dev/null; then
+    # Prioritize Docker on macOS (more common)
+    if [[ "$OSTYPE" == "darwin"* ]] && command -v docker &> /dev/null; then
+        echo "docker"
+    elif command -v podman &> /dev/null; then
         echo "podman"
     elif command -v docker &> /dev/null; then
         echo "docker"
@@ -180,7 +183,9 @@ main() {
     # Get port configuration
     local port
     while true; do
-        port=$(get_input "Enter port for dashboard" "$DEFAULT_PORT")
+        echo -e "${CYAN}Enter port for dashboard${NC} ${WHITE}[default: $DEFAULT_PORT]${NC}: "
+        read -r port_input
+        port="${port_input:-$DEFAULT_PORT}"
         
         if ! [[ "$port" =~ ^[0-9]+$ ]] || [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
             print_error "Invalid port number. Please enter a number between 1-65535."
@@ -196,8 +201,13 @@ main() {
     done
     
     # Get Proxmox configuration
-    local proxmox_host=$(get_input "Enter Proxmox server URL" "$DEFAULT_PROXMOX_HOST")
-    local guacamole_host=$(get_input "Enter Guacamole server URL" "$DEFAULT_GUACAMOLE_HOST")
+    echo -e "${CYAN}Enter Proxmox server URL${NC} ${WHITE}[default: $DEFAULT_PROXMOX_HOST]${NC}: "
+    read -r proxmox_input
+    local proxmox_host="${proxmox_input:-$DEFAULT_PROXMOX_HOST}"
+    
+    echo -e "${CYAN}Enter Guacamole server URL${NC} ${WHITE}[default: $DEFAULT_GUACAMOLE_HOST]${NC}: "
+    read -r guacamole_input
+    local guacamole_host="${guacamole_input:-$DEFAULT_GUACAMOLE_HOST}"
     
     # Create .env file for container
     echo "Creating .env configuration..."
