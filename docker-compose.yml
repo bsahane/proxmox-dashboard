@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  proxmox-dashboard:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: proxmox-dashboard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - NEXT_TELEMETRY_DISABLED=1
+      # Proxmox and Guacamole configuration (customize as needed)
+      - PROXMOX_HOST=https://192.168.50.7:8006
+      - GUACAMOLE_HOST=http://192.168.50.183:8080
+      - PROXMOX_API_TIMEOUT=30000
+      - DASHBOARD_REFRESH_INTERVAL=30
+    env_file:
+      - .env.local  # Load from local env file if it exists
+    volumes:
+      # Optional: Mount logs directory for persistent logging
+      - ./logs:/app/logs
+    networks:
+      - proxmox-net
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxmox-dashboard.rule=Host(`proxmox.yourdomain.com`)"
+      - "traefik.http.routers.proxmox-dashboard.tls=true"
+      - "traefik.http.routers.proxmox-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.services.proxmox-dashboard.loadbalancer.server.port=3000"
+
+networks:
+  proxmox-net:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local

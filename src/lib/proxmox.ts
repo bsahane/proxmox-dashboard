@@ -266,10 +266,13 @@ export class ProxmoxAPI {
   async rollbackSnapshot(node: string, vmid: number, snapname: string): Promise<string> {
     try {
       const response = await axios.post(
-        `${this.baseURL}/nodes/${node}/qemu/${vmid}/snapshot/${snapname}/rollback`,
+        `/api/proxmox/nodes/${node}/qemu/${vmid}/snapshot/${snapname}/rollback`,
         {},
         {
-          headers: this.getHeaders(),
+          headers: {
+            'Authorization': `PVEAuthCookie=${this.ticket?.ticket}`,
+            'CSRFPreventionToken': this.ticket?.CSRFPreventionToken || '',
+          },
           timeout: 30000,
         }
       );

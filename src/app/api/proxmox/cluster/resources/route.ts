@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing authentication' }, { status: 401 });
     }
 
-    const url = `https://192.168.50.7:8006/api2/json/cluster/resources${type ? `?type=${type}` : ''}`;
+    const proxmoxHost = process.env.PROXMOX_HOST || 'https://192.168.50.7:8006';
+    const url = `${proxmoxHost}/api2/json/cluster/resources${type ? `?type=${type}` : ''}`;
     
     const response = await fetch(url, {
       method: 'GET',

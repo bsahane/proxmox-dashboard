@@ -52,6 +52,22 @@ export default function DashboardPage() {
   }, [isAuthenticated, router]);
 
   // Load initial data
+  // Load application configuration
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const response = await fetch('/api/config');
+        if (response.ok) {
+          const data = await response.json();
+          setAppConfig(data.config);
+        }
+      } catch (error) {
+        console.error('Failed to load config:', error);
+      }
+    };
+    loadConfig();
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated) {
       loadDashboardData();
@@ -110,7 +126,7 @@ export default function DashboardPage() {
     }
   };
 
-  const handleVMAction = async (action: string, vm: ProxmoxVM | ProxmoxLXC, type: 'vm' | 'lxc') => {
+  const handleVMAction = async (action: string, vm: ProxmoxVM | ProxmoxLXC, type: 'vm' | 'lxc', snapname?: string) => {
     try {
       
       switch (action) {
@@ -133,14 +149,17 @@ export default function DashboardPage() {
           }
           break;
         case 'console':
-          // Open Guacamole console in new tab
-          const guacamoleUrl = `http://192.168.50.183:8080/guacamole/#/client/${vm.vmid}`;
+          // Open Guacamole console in new tab using configured host
+          const guacamoleHost = appConfig?.guacamole?.host || 'http://192.168.50.183:8080';
+          const guacamoleUrl = `${guacamoleHost}/guacamole/#/client/${vm.vmid}`;
           window.open(guacamoleUrl, '_blank');
           return;
         case 'snapshot':
-          // Handle snapshot restore
-          toast.info('Snapshot restore feature coming soon');
-          return;
+          if (snapname && type === 'vm') {
+            await proxmoxAPI.rollbackSnapshot(vm.node, vm.vmid, snapname);
+            toast.success(`VM ${vm.vmid} restored to snapshot: ${snapname}`);
+          }
+          break;
       }
 
       // Refresh data after action
@@ -370,7 +389,7 @@ export default function DashboardPage() {
                   onStop={() => handleVMAction('stop', item, type)}
                   onReset={() => handleVMAction('reset', item, type)}
                   onConsole={() => handleVMAction('console', item, type)}
-                  onSnapshot={type === 'vm' ? () => handleVMAction('snapshot', item, type) : undefined}
+                  onSnapshot={type === 'vm' ? (snapname: string) => handleVMAction('snapshot', item, type, snapname) : undefined}
                 />
               );
             })}

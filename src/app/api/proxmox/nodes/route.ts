@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing authentication' }, { status: 401 });
     }
 
-    const response = await fetch('https://192.168.50.7:8006/api2/json/nodes', {
+    const proxmoxHost = process.env.PROXMOX_HOST || 'https://192.168.50.7:8006';
+    const response = await fetch(`${proxmoxHost}/api2/json/nodes`, {
       method: 'GET',
       headers: {
         'Authorization': authHeader,

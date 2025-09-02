@@ -15,7 +15,8 @@ export async function POST(
     const { node, vmid } = await params;
     console.log(`Stopping VM ${vmid} on node ${node}`);
 
-    const response = await fetch(`https://192.168.50.7:8006/api2/json/nodes/${node}/qemu/${vmid}/status/stop`, {
+    const proxmoxHost = process.env.PROXMOX_HOST || 'https://192.168.50.7:8006';
+    const response = await fetch(`${proxmoxHost}/api2/json/nodes/${node}/qemu/${vmid}/status/stop`, {
       method: 'POST',
       headers: {
         'Authorization': authHeader,

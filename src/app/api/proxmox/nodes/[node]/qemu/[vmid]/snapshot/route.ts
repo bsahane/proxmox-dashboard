@@ -15,7 +15,8 @@ export async function GET(
     const { node, vmid } = await params;
     console.log(`Getting snapshots for VM ${vmid} on node ${node}`);
 
-    const response = await fetch(`https://192.168.50.7:8006/api2/json/nodes/${node}/qemu/${vmid}/snapshot`, {
+    const proxmoxHost = process.env.PROXMOX_HOST || 'https://192.168.50.7:8006';
+    const response = await fetch(`${proxmoxHost}/api2/json/nodes/${node}/qemu/${vmid}/snapshot`, {
       method: 'GET',
       headers: {
         'Authorization': authHeader,

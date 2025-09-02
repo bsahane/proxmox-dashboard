@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
     // Log authentication attempt
     console.log(`Authentication attempt for user: ${username}`);
 
-    const response = await fetch('https://192.168.50.7:8006/api2/json/access/ticket', {
+    const proxmoxHost = process.env.PROXMOX_HOST || 'https://192.168.50.7:8006';
+    const response = await fetch(`${proxmoxHost}/api2/json/access/ticket`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
