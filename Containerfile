@@ -13,8 +13,8 @@ RUN apk add --no-cache libc6-compat
 # Copy package files
 COPY package*.json ./
 
-# Clean install dependencies (more reliable than npm ci)
-RUN npm install --production --silent && npm cache clean --force
+# Install ALL dependencies for build (including devDependencies)
+RUN npm install --silent && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -24,7 +24,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# Build the application
+# Use container-optimized config and build
+COPY next.config.container.js next.config.js
 RUN npm run build
 
 # Stage 2: Production Runtime
