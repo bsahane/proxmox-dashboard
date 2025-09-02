@@ -42,33 +42,25 @@ echo -e "${GREEN}✅ Using $RUNTIME runtime${NC}"
 check_port() {
     local port=$1
     
-    # Try multiple methods to check port availability
-    # Method 1: lsof (most common)
+    # Simple and reliable port check using Python (available on most systems)
+    if command -v python3 >/dev/null 2>&1; then
+        python3 -c "
+import socket
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    result = s.connect_ex(('localhost', $port))
+    s.close()
+    exit(0 if result != 0 else 1)
+except:
+    exit(0)
+" 2>/dev/null
+        return $?
+    fi
+    
+    # Fallback: Try lsof if available
     if command -v lsof >/dev/null 2>&1; then
         if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
-            return 1
-        fi
-    fi
-    
-    # Method 2: netstat (backup)
-    if command -v netstat >/dev/null 2>&1; then
-        if netstat -tuln 2>/dev/null | grep -q ":$port "; then
-            return 1
-        fi
-    fi
-    
-    # Method 3: ss (newer systems)
-    if command -v ss >/dev/null 2>&1; then
-        if ss -tuln 2>/dev/null | grep -q ":$port "; then
-            return 1
-        fi
-    fi
-    
-    # Method 4: Try to bind to port (most reliable)
-    if command -v nc >/dev/null 2>&1; then
-        if ! nc -z localhost $port 2>/dev/null; then
-            return 0
-        else
             return 1
         fi
     fi
