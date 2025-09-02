@@ -14,7 +14,7 @@ RUN apk add --no-cache libc6-compat
 COPY package*.json ./
 
 # Install ALL dependencies for build (including devDependencies)
-RUN npm install --silent && npm cache clean --force
+    RUN npm ci --include=dev --silent && npm cache clean --force
 
 # Copy source code
 COPY . .
