@@ -1,5 +1,5 @@
 {
-  "name": "proxmox-dashboard",
+  "name": "skynet-dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,6 +16,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.6",
     "@tanstack/react-query": "^5.62.8",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.465.0",

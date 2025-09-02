@@ -14,7 +14,7 @@ import { Server, Lock, User, Eye, EyeOff } from 'lucide-react';
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [realm, setRealm] = useState('pam');
+  const [realm, setRealm] = useState('pve');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function LoginPage() {
           <div className="mx-auto w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
             <Server className="h-6 w-6 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold">Proxmox Dashboard</CardTitle>
+          <CardTitle className="text-2xl font-bold">Skynet Dashboard</CardTitle>
           <CardDescription>
             Sign in to manage your virtual machines and containers
           </CardDescription>

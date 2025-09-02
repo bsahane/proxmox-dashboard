@@ -230,7 +230,7 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Server className="h-6 w-6 text-blue-600" />
-                <h1 className="text-xl font-bold">Proxmox Dashboard</h1>
+                <h1 className="text-xl font-bold">Skynet Dashboard</h1>
               </div>
               <Badge variant="outline">
                 Welcome, {user}

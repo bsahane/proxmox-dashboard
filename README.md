@@ -1,8 +1,8 @@
-# 🚀 Proxmox Dashboard
+# 🚀 Skynet Dashboard
 
 A modern, beautiful web dashboard for managing Proxmox Virtual Environment (PVE) with integrated Apache Guacamole console access.
 
-![Proxmox Dashboard](https://img.shields.io/badge/Proxmox-Dashboard-blue?style=for-the-badge&logo=proxmox)
+![Skynet Dashboard](https://img.shields.io/badge/Skynet-Dashboard-blue?style=for-the-badge&logo=proxmox)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
@@ -267,7 +267,7 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 
 **2. Authentication Failures**
 - Verify Proxmox server URL is correct
-- Check username format (should include realm: `user@pam`)
+- Check username format (should include realm: `user@pve`)
 - Ensure user has necessary permissions
 
 **3. VM Operations Not Working**
